@@ -11,7 +11,7 @@ The location is: https://christopher-cruzcosa.github.io/js-testing-app/
 
 ![Screenshot](./assets/images/screenshot1.png)
 
-The user see initall see a main screen that allows them to either begin the quiz or see the existing high scores.
+The user will initially see a main screen that allows them to either begin the quiz or see the existing high scores.
 
 If they begin the quiz, the user will be asked five questions and will answer by clicking on the options.  A timer is running down from 100 seconds and each wrong answer deducts 10 seconds from the remaining total.  After the quiz, the remaining time in seconds is the user's score.  The user will see their score and then be asked to input their initials.  After submitting, a high scores screen will come up, which displays all previous scores/initials stored in local storage.  Once the user clicks "done", it will return them to the main screen.
 

@@ -1,5 +1,6 @@
 var mainContentLoc = document.getElementById("mainContent");
 var mainButtonLoc = document.getElementById("mainButton");
+var highScoresButtonLoc = document.getElementById("viewHighScores");
 
 var sectionCount = 0;
 var timerSeconds = 100;
@@ -7,8 +8,34 @@ var initials = "" ;
 var score = 0;
 var highScores = [];
 
+function compareValues(key, order = 'asc') {
+    return function innerSort(a, b) {
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        // property doesn't exist on either object
+        return 0;
+      }
+  
+      const varA = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+      const varB = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+  
+      let comparison = 0;
+      if (varA > varB) {
+        comparison = 1;
+      } else if (varA < varB) {
+        comparison = -1;
+      }
+      return (
+        (order === 'desc') ? (comparison * -1) : comparison
+      );
+    };
+  };
 
-// Add code to the init function
+
+
+
+
 function init() {
   var existingScores = JSON.parse(localStorage.getItem("highScoreList"));
 
@@ -19,12 +46,13 @@ function init() {
 }
 
 
+
 init();
 
 function setTime() {
     var timerInterval = setInterval(function() {
       timerSeconds--;
-      document.getElementById("countdown").textContent = timerSeconds;
+      document.getElementById("countdown").textContent = ("Time: " + timerSeconds);
       if(timerSeconds < 1) {
         clearInterval(timerInterval);
         document.getElementById("countdown").value = 0;
@@ -253,7 +281,7 @@ mainContentLoc.addEventListener("click", function(event){
             correctamundo = true;
             score = timerSeconds;
         };
-        // document.getElementById("countdown").value = 0;
+
         mainContentLoc.innerHTML = "";
         var node = document.createElement("H2");
         mainContentLoc.appendChild(node);
@@ -294,28 +322,58 @@ mainContentLoc.addEventListener("click", function(event){
         var lineBreakE1 = document.createElement("DIV");
         node.appendChild(lineBreakE1);
         lineBreakE1.innerHTML = "<br>";
-        for (var i = 0; i < highScores.length; i++) {
+        for (var i = 0; i < highScores.sort(compareValues('scoreValue', 'desc')).length; i++) {
             var newP = document.createElement("p");
             node.appendChild(newP);
-            var newSpan = document.createElement("span");
-            newP.appendChild(newSpan);
-            newSpan.textContent = highScores[i].scoreValue + " - " + highScores[i].initialsValue;
-            newSpan.style.backgroundColor = "#FF007C";
-            newSpan.style.color = "#87FF2A";
-            newSpan.id = ("question" + i);            
+            newP.textContent = (i+1) + ") " + highScores.sort(compareValues('scoreValue','desc'))[i].scoreValue + " - " + highScores.sort(compareValues('scoreValue', 'desc'))[i].initialsValue;
+            newP.style.backgroundColor = "#87FF2A";
+            newP.style.color = "#FF007C";
         };
-
-
-        
+        var highScoreButton = document.createElement("BUTTON");
+        highScoreButton.setAttribute("type","button");
+        highScoreButton.setAttribute("class","btn btn-success");
+        highScoreButton.textContent = "Done";
+        highScoreButton.id = "goAwayFromScoresButton";
+        node.appendChild(highScoreButton);
     };
 
-    // location.reload();
-
+    if (event.target.id === "goAwayFromScoresButton") {
+        location.reload();
+    };
 
     sectionCount++;
 });
 
 
+highScoresButtonLoc.addEventListener("click", function(event){
 
+    event.preventDefault();
+    event.stopPropagation();
+    mainContentLoc.innerHTML = "";
+        var node = document.createElement("H2");
+        mainContentLoc.appendChild(node);
+        node.textContent = "High Scores";
+        var lineBreakE1 = document.createElement("DIV");
+        node.appendChild(lineBreakE1);
+        lineBreakE1.innerHTML = "<br>";
+        for (var i = 0; i < highScores.sort(compareValues('scoreValue', 'desc')).length; i++) {
+            var newP = document.createElement("p");
+            node.appendChild(newP);
+            newP.textContent = (i+1) + ") " + highScores.sort(compareValues('scoreValue','desc'))[i].scoreValue + " - " + highScores.sort(compareValues('scoreValue', 'desc'))[i].initialsValue;
+            newP.style.backgroundColor = "#87FF2A";
+            newP.style.color = "#FF007C";
+        };
+        var highScoreButton = document.createElement("BUTTON");
+        highScoreButton.setAttribute("type","button");
+        highScoreButton.setAttribute("class","btn btn-success");
+        highScoreButton.textContent = "Done";
+        highScoreButton.id = "goAwayFromScoresButton";
+        node.appendChild(highScoreButton);
+});
 
-
+document.getElementById("goAwayFromScoresButton").addEventListener("click", function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    mainContentLoc.innerHTML = "";
+    location.reload();
+});
